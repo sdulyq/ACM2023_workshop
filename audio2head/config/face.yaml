@@ -1,0 +1,67 @@
+
+
+distributed: True
+max_epoch: 200
+
+
+data:  # 存放数据lmdb的地方
+    type: data.vox_dataset::VoxDataset
+    time_size: 90
+    path: /root/autodl-tmp/VECTOR/dataset/vox_lmdb
+    # /root/autodl-tmp/Finetune/audio2recon_big_data/dataset  # ./dataset/vox_lmdb
+    resolution: 256
+    semantic_radius: 1
+    train:
+      batch_size: 512
+      distributed: True
+    val:
+      batch_size: 8
+      distributed: True
+
+
+trainer: Trainer
+exp_model:
+  audio_dim: 45
+  audio_fusion: 90
+  dynamic_3dmm: 73
+  exp_emb: 64
+  exp_fusion: 80
+  fusion:
+    output_dim: 90  # 音频最终编码维度
+    lstm:
+      num_layers: 4
+      bias: False
+      dropout: 0.1
+      hidden_size: 160
+    exp:
+      input_dim: 64
+      output_dim: 128 # exp最终编码维度
+    id:
+      input_dim: 2622
+      output_dim: 128
+  predict:
+    lstm:
+      input_dim: 398
+      out_dim: 128
+    linear: 
+      input_dim: 128
+      out_dim: 64
+
+head_model:
+  audio_dim: 45
+  audio_fusion: 90
+  text_emb: 32
+  dynamic_3dmm: 73
+  pose_emb: 9
+
+
+head_optimizer:
+    lr: 0.002
+    adam_beta1: 0.9
+    adam_beta2: 0.999
+    lr_policy: step
+    weight_decay: 0.05
+    step_size:  1 # 300000  这里改成了与epoch相关
+    gamma: 0.8
+
+
